@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>BC CourseFinder™ | AI Career Guide</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>BC CourseFinder™</h1>
+      <p>Your AI career guide for IT at Belgium Campus</p>
+    </header>
+
+    <div id="chat" class="chat-area">
+      <div class="message bot">
+        👋 Hi! I'm BC CourseFinder™. Ask me about IT careers, subjects, qualifications, and more!
+      </div>
+    </div>
+
+    <!-- Suggestion chips row -->
+    <div class="suggestions">
+      <button class="suggestion-chip" data-question="What IT careers can I study with Maths and Physical Science?">📚 Careers with Maths & Science</button>
+      <button class="suggestion-chip" data-question="What skills do I need to become a software developer?">💻 Skills for software developer</button>
+      <button class="suggestion-chip" data-question="What is the difference between a diploma and a degree?">🎓 Diploma vs Degree</button>
+      <button class="suggestion-chip" data-question="What is the difference between Maths and Math Literacy for IT selection?">📐 Maths vs Math Literacy</button>
+      <button class="suggestion-chip" data-question="What is the difference between Software Development, Data Science, and Networking?">🖧 Dev vs Data vs Networking</button>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your question..." autocomplete="off">
+      <button id="sendBtn">Send</button>
+    </div>
+    <p class="note">🔒 I only answer IT‑related career questions.</p>
+  </div>
+
+  <script>
+    const chatDiv = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function addMessage(text, isUser = false) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${isUser ? "user" : "bot"}`;
+      msgDiv.textContent = text;
+      chatDiv.appendChild(msgDiv);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, true);
+      userInput.value = "";
+      sendBtn.disabled = true;
+
+      const typing = document.createElement("div");
+      typing.className = "message bot typing";
+      typing.textContent = "Typing...";
+      chatDiv.appendChild(typing);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+        typing.remove();
+        addMessage(data.reply);
+      } catch (err) {
+        typing.remove();
+        addMessage("Sorry, I'm having trouble connecting. Please try again.");
+      } finally {
+        sendBtn.disabled = false;
+        userInput.focus();
+      }
+    }
+
+    // Suggestion chips click handler
+    const chips = document.querySelectorAll('.suggestion-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const question = chip.getAttribute('data-question');
+        userInput.value = question;
+        sendMessage();
+      });
+    });
+
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
