@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APS Calculator – BC CourseFinder</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .aps-container {
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #4f46e5;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #4b5563;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 15px;
+    }
+    .subject-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .subject-name { flex: 2; }
+    .subject-percent { flex: 1; }
+    select, input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .subject-label {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      font-family: inherit;
+      background: #f0f0f5;
+      color: #4f46e5;
+      font-weight: 600;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+    }
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      text-align: center;
+      display: none;
+    }
+    .aps-score {
+      font-size: 42px;
+      font-weight: bold;
+      color: #4f46e5;
+    }
+    .note {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #4f46e5;
+      text-decoration: none;
+    }
+    .header-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .nav-btn {
+      background: #e9ecef;
+      color: #4f46e5;
+      padding: 6px 14px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .save-message {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #28a745;
+      display: none;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6c757d;
+      margin: 18px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+<div class="aps-container">
+  <div class="header-buttons">
+    <a href="/index.html" class="nav-btn">← Back to Chat</a>
+    <a href="/login.html" class="nav-btn">Login / Register</a>
+  </div>
+  <h1>APS Calculator</h1>
+  <div class="subtitle">Calculate your Admission Point Score for Belgium Campus IT programmes</div>
+
+  <!-- Core required subjects (fixed labels) -->
+  <div class="section-label">Core Subjects</div>
+
+  <div class="subject-row">
+    <div class="subject-name">
+      <select id="mathType">
+        <option value="pure">Mathematics (Pure)</option>
+        <option value="literacy">Mathematics (Literacy)</option>
+      </select>
+    </div>
+    <div class="subject-percent">
+      <input type="number" id="percent_math" placeholder="Percentage %" min="0" max="100">
+    </div>
+  </div>
+  <div id="literacyBridgeNote" style="display:none; font-size: 12px; color: #ff6b6b; margin-bottom: 10px; font-weight: 500;">⚠️ Note: Mathematical Literacy requires a maths bridging course.</div>
+
+  <div class="subject-row">
+    <div class="subject-name">
+      <div class="subject-label">English</div>
+    </div>
+    <div class="subject-percent">
+      <input type="number" id="percent_english" placeholder="Percentage %" min="0" max="100">
+    </div>
+  </div>
+
+  <!-- Additional subjects (student types in subject name) -->
+  <div class="section-label">Other Subjects (type your subject name)</div>
+
+  <div id="subjectsContainer"></div>
+
+  <button id="calculateBtn">Calculate My APS</button>
+  <div id="resultArea" class="result">
+    <div>Your APS Score is:</div>
+    <div class="aps-score" id="apsValue">0</div>
+    <div id="eligibilityText"></div>
+  </div>
+  <div id="saveMessage" class="save-message">✓ Score saved to your profile</div>
+  <div class="note">* APS uses 6 best subjects excluding Life Orientation. Both Pure Mathematics and Mathematical Literacy are accepted (Literacy requires bridging course).</div>
+  <a href="/about.html" class="back-link">Learn more about Belgium Campus →</a>
+</div>
+
+<script src="/aps-helper.js"></script>
+<script>
+  // Build 4 additional subject rows (typed name + percentage)
+  const container = document.getElementById('subjectsContainer');
+  for (let i = 0; i < 4; i++) {
+    const row = document.createElement('div');
+    row.className = 'subject-row';
+    row.innerHTML = `
+      <div class="subject-name">
+        <input type="text" id="subjectName${i}" placeholder="e.g. Physical Science, History, Accounting...">
+      </div>
+      <div class="subject-percent">
+        <input type="number" id="percent${i}" placeholder="Percentage %" min="0" max="100">
+      </div>
+    `;
+    container.appendChild(row);
+  }
+
+  function calculateAPS() {
+    let totalAPS = 0;
+
+    // Core subjects
+    const mathPercent = parseInt(document.getElementById('percent_math').value) || 0;
+    const englishPercent = parseInt(document.getElementById('percent_english').value) || 0;
+    const hasMath = mathPercent > 0;
+
+    if (mathPercent > 0) totalAPS += window.percentageToAPS(mathPercent);
+    if (englishPercent > 0) totalAPS += window.percentageToAPS(englishPercent);
+
+    // Additional subjects
+    for (let i = 0; i < 4; i++) {
+      const percent = parseInt(document.getElementById(`percent${i}`).value);
+      if (!isNaN(percent) && percent > 0) {
+        totalAPS += window.percentageToAPS(percent);
+      }
+    }
+
+    return { totalAPS, hasMath, mathPercent, englishPercent };
+  }
+
+  // Show/hide bridging note based on math type
+  document.getElementById('mathType').addEventListener('change', function() {
+    const bridgeNote = document.getElementById('literacyBridgeNote');
+    if (this.value === 'literacy') {
+      bridgeNote.style.display = 'block';
+    } else {
+      bridgeNote.style.display = 'none';
+    }
+  });
+
+  document.getElementById('calculateBtn').onclick = () => {
+    const { totalAPS, hasMath, mathPercent, englishPercent } = calculateAPS();
+    const mathType = document.getElementById('mathType').value;
+    document.getElementById('apsValue').innerText = totalAPS;
+
+    let eligibleText = "";
+    if (!hasMath) {
+      eligibleText = "❌ You do NOT qualify for any IT programme (Mathematics required).";
+    } else if (mathType === 'literacy') {
+      if (totalAPS >= 24 && mathPercent >= 50 && englishPercent >= 50) {
+        eligibleText = "✅ You qualify for the BSc IT Degree programme! (with maths bridging course for Mathematical Literacy)";
+      } else if (totalAPS >= 18 && mathPercent >= 40 && englishPercent >= 40) {
+        eligibleText = "✅ You qualify for the Diploma in IT programme. (with maths bridging course for Mathematical Literacy)";
+      } else {
+        eligibleText = "⚠️ You do not currently meet the minimum requirements. Consider improving your Maths and English marks.";
+      }
+    } else {
+      if (totalAPS >= 24 && mathPercent >= 50 && englishPercent >= 50) {
+        eligibleText = "✅ You qualify for the BSc IT Degree programme!";
+      } else if (totalAPS >= 18 && mathPercent >= 40 && englishPercent >= 40) {
+        eligibleText = "✅ You qualify for the Diploma in IT programme.";
+      } else {
+        eligibleText = "⚠️ You do not currently meet the minimum requirements. Consider improving your Maths and English marks.";
+      }
+    }
+
+    document.getElementById('eligibilityText').innerHTML = eligibleText;
+    document.getElementById('resultArea').style.display = 'block';
+
+    const endorsement = (totalAPS >= 24 && mathPercent >= 50 && englishPercent >= 50)
+      ? "Bachelor"
+      : (totalAPS >= 18 && mathPercent >= 40 && englishPercent >= 40)
+      ? "Diploma"
+      : "Higher Certificate";
+
+    const profile = {
+      apsScore: totalAPS,
+      english: englishPercent,
+      mathematics: mathPercent,
+      endorsement: endorsement,
+      eligibleCourses: [],
+      timestamp: new Date().toISOString()
+    };
+
+    if (window.saveAPSProfile) window.saveAPSProfile(profile);
+    else localStorage.setItem('studentAPSProfile', JSON.stringify(profile));
+
+    const saveMsg = document.getElementById('saveMessage');
+    saveMsg.style.display = 'block';
+    setTimeout(() => saveMsg.style.display = 'none', 3000);
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account – BC CourseFinder</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .register-card { background: white; border-radius: 24px; padding: 40px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+    .register-card h1 { color: #4f46e5; margin-bottom: 10px; }
+    .register-card p { color: #4b5563; margin-bottom: 30px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; color: #4f46e5; font-weight: 500; }
+    input { width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 12px; font-size: 16px; }
+    .btn { width: 100%; padding: 14px; background: #4f46e5; color: white; border: none; border-radius: 40px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    .btn:hover { background: #4338ca; }
+    .back-link { text-align: center; margin-top: 20px; }
+    .error { color: #dc3545; font-size: 12px; margin-top: 5px; display: none; }
+  </style>
+</head>
+<body>
+<div class="register-card">
+  <h1>Create an Account</h1>
+  <p>Sign up to save your chat history and APS results.</p>
+  <form id="registerForm">
+    <div class="form-group"><label>Name</label><input type="text" id="name" required><div class="error" id="nameError">Please enter your name</div></div>
+    <div class="form-group"><label>Surname</label><input type="text" id="surname" required><div class="error" id="surnameError">Please enter your surname</div></div>
+    <div class="form-group"><label>Email Address</label><input type="email" id="email" required><div class="error" id="emailError">Please enter a valid email</div></div>
+    <button type="submit" class="btn">Create Account & Continue</button>
+  </form>
+  <div class="back-link"><a href="/login.html">← Back to Login</a></div>
+</div>
+<script>
+  document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim(), surname = document.getElementById('surname').value.trim(), email = document.getElementById('email').value.trim();
+    let valid = true;
+    if (!name) { document.getElementById('nameError').style.display = 'block'; valid = false; } else { document.getElementById('nameError').style.display = 'none'; }
+    if (!surname) { document.getElementById('surnameError').style.display = 'block'; valid = false; } else { document.getElementById('surnameError').style.display = 'none'; }
+    if (!email || !email.includes('@')) { document.getElementById('emailError').style.display = 'block'; valid = false; } else { document.getElementById('emailError').style.display = 'none'; }
+    if (!valid) return;
+    const users = JSON.parse(localStorage.getItem('bc_users') || '{}');
+    if (users[email]) { alert('An account with this email already exists. Please log in.'); return; }
+    users[email] = { name, surname, email, createdAt: new Date().toISOString(), chatHistory: [], apsResults: null };
+    localStorage.setItem('bc_users', JSON.stringify(users));
+    localStorage.setItem('bc_logged_in_user', email);
+    window.location.href = '/landing.html';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – BC CourseFinder</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .login-card { background: white; border-radius: 24px; padding: 40px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; }
+    .login-card h1 { color: #4f46e5; margin-bottom: 10px; font-size: 2rem; }
+    .login-card p { color: #4b5563; margin-bottom: 30px; }
+    .btn { display: block; width: 100%; padding: 14px; margin-bottom: 15px; border: none; border-radius: 40px; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; }
+    .btn-primary { background: #4f46e5; color: white; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-secondary { background: #e9ecef; color: #4f46e5; border: 1px solid #dee2e6; }
+    .divider { margin: 20px 0; position: relative; text-align: center; }
+    .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 45%; height: 1px; background: #dee2e6; }
+    .divider::before { left: 0; } .divider::after { right: 0; }
+    .divider span { background: white; padding: 0 10px; color: #6c757d; }
+    .footer-links { margin-top: 20px; font-size: 12px; }
+    .footer-links a { color: #4f46e5; text-decoration: none; margin: 0 10px; }
+  </style>
+</head>
+<body>
+<div class="login-card">
+  <h1>BC CourseFinder™</h1>
+  <p>Sign in to save your chats & APS results</p>
+  <button class="btn btn-primary" id="createAccountBtn">✍️ Create an Account</button>
+  <button class="btn btn-secondary" id="guestBtn">👤 Continue as Guest</button>
+  <div class="divider"><span>or</span></div>
+  <button class="btn btn-secondary" id="existingLoginBtn">🔐 Login with existing account</button>
+  <div class="footer-links"><a href="/aps.html">APS Calculator</a> | <a href="/landing.html">About</a> | <a href="https://www.belgiumcampus.ac.za" target="_blank">Official Website</a></div>
+</div>
+<script>
+  document.getElementById('createAccountBtn').onclick = () => window.location.href = '/register.html';
+  document.getElementById('guestBtn').onclick = () => { localStorage.removeItem('bc_logged_in_user'); window.location.href = '/landing.html'; };
+  document.getElementById('existingLoginBtn').onclick = () => {
+    const email = prompt("Enter your registered email address:");
+    if (email && email.trim()) {
+      const users = JSON.parse(localStorage.getItem('bc_users') || '{}');
+      if (users[email]) { localStorage.setItem('bc_logged_in_user', email); alert(`Welcome back, ${users[email].name}!`); window.location.href = '/landing.html'; }
+      else alert("No account found with that email. Please create an account first.");
+    }
+  };
+</script>
+</body>
+</html>

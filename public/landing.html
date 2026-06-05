@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>BC CourseFinder™ | AI IT Career Guide for Matrics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #eef5ff; color: #1a1a1a; line-height: 1.5; }
+    .accent-purple { color: #3c2a5f; }
+    .btn-primary { background-color: #c97e2c; color: white; transition: all 0.2s ease; }
+    .btn-primary:hover { background-color: #a8621f; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,126,44,0.3); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 1rem 0 1.5rem 0; border-bottom: 2px solid #3c2a5f; }
+    .logo h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #2c1e4a 0%, #3c2a5f 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .logo span { font-size: 0.9rem; font-weight: 400; color: #c97e2c; display: block; }
+    .nav-links a, .nav-links button { margin-left: 2rem; text-decoration: none; font-weight: 500; color: #2c1e4a; background: none; border: none; cursor: pointer; font-size: 1rem; }
+    .nav-links a:hover, .nav-links button:hover { color: #c97e2c; }
+    .my-aps-btn { background: #c97e2c; color: white; padding: 0.4rem 1rem; border-radius: 40px; }
+    .my-aps-btn:hover { background: #a8621f; color: white; }
+    .hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem; margin: 3rem 0 4rem 0; }
+    .hero-text { flex: 1; }
+    .hero-text .badge { background: #3c2a5f20; color: #2c1e4a; display: inline-block; padding: 0.3rem 1rem; border-radius: 30px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+    .hero-text h2 { font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.2rem; color: #1f1a2e; }
+    .hero-text p { font-size: 1.2rem; color: #2c2c2c; margin-bottom: 2rem; }
+    .hero-image { flex: 1; text-align: center; background: #f0f7ff; border-radius: 2rem; padding: 1rem; }
+    .hero-image i { font-size: 8rem; color: #3c2a5f; opacity: 0.8; }
+    .section-title { text-align: center; font-size: 2.2rem; font-weight: 700; margin: 3rem 0 1rem 0; color: #1f1a2e; position: relative; }
+    .section-title:after { content: ''; display: block; width: 70px; height: 4px; background: #c97e2c; margin: 0.6rem auto 0; border-radius: 4px; }
+    .steps { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin: 2rem 0 3rem; }
+    .step-card { background: white; border-radius: 1.5rem; padding: 2rem 1.5rem; flex: 1; min-width: 220px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border-bottom: 4px solid #eef5ff; transition: all 0.2s; }
+    .step-card:hover { transform: translateY(-5px); border-bottom-color: #c97e2c; }
+    .step-icon { background: #eef5ff; width: 70px; height: 70px; border-radius: 40px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; }
+    .step-icon i { font-size: 2rem; color: #3c2a5f; }
+    .step-card h3 { font-size: 1.4rem; margin-bottom: 0.8rem; color: #2c1e4a; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin: 2rem 0 3rem; }
+    .feature { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 5px solid #c97e2c; cursor: pointer; transition: 0.2s; }
+    .feature:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .feature i { font-size: 2rem; color: #3c2a5f; margin-bottom: 0.8rem; }
+    .feature h4 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .cta { background: linear-gradient(145deg, #2c1e4a 0%, #1f1738 100%); border-radius: 2rem; text-align: center; padding: 3rem 2rem; margin: 3rem 0; color: white; }
+    .btn-cta { background-color: #c97e2c; padding: 0.9rem 2rem; border: none; border-radius: 60px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+    .btn-cta:hover { background-color: #b06a20; transform: scale(1.02); }
+    footer { text-align: center; padding: 2rem 0; border-top: 1px solid #cee0ff; font-size: 0.85rem; color: #4a4a6a; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; border-radius: 1.5rem; padding: 2rem; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #eef5ff; }
+    .modal-header h2 { color: #2c1e4a; }
+    .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; }
+    .aps-form { display: grid; gap: 1.5rem; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-weight: 600; color: #2c1e4a; margin-bottom: 0.5rem; }
+    .form-group input, .form-group select { padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 0.6rem; }
+    .form-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-group { display: flex; gap: 1rem; margin-top: 2rem; }
+    .btn-calculate, .btn-reset { padding: 0.9rem 2rem; border: none; border-radius: 0.6rem; font-weight: 600; cursor: pointer; flex: 1; }
+    .btn-calculate { background: #c97e2c; color: white; }
+    .btn-reset { background: #e0e0e0; }
+    .aps-result { background: #f0f7ff; border-left: 5px solid #c97e2c; border-radius: 0.8rem; padding: 1.5rem; margin: 1.5rem 0; }
+    .aps-score-display { font-size: 2.2rem; font-weight: 800; color: #c97e2c; }
+    .eligibility-cards { display: grid; gap: 1rem; margin-top: 1.5rem; }
+    .eligibility-card { padding: 1.2rem; border-radius: 0.8rem; border-left: 5px solid #999; }
+    .eligibility-card.eligible { background: #e8f5e9; border-left-color: #4caf50; }
+    .eligibility-card.ineligible { background: #ffebee; border-left-color: #f44336; }
+    @media (max-width: 768px) { .hero-text h2 { font-size: 2rem; } .navbar { flex-direction: column; gap: 1rem; } .nav-links a, .nav-links button { margin: 0 1rem; } .form-group-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="navbar">
+    <div class="logo"><h1>BC CourseFinder™</h1><span>AI career compass for future IT leaders</span></div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+      <button class="my-aps-btn" id="openAPSBtn"><i class="fas fa-calculator"></i> My APS</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-text">
+      <div class="badge"><i class="fas fa-robot"></i> South Africa’s smartest IT study guide</div>
+      <h2>Your future in IT <br> starts with a question.</h2>
+      <p>BC CourseFinder is an AI career assistant for <strong>South African Matric students</strong> wanting to study IT at <strong>Belgium Campus iTversity</strong>. Get instant answers about careers, subjects, APS scores, and qualifications.</p>
+      <a href="/index.html" class="btn-primary" style="display: inline-block; padding: 0.8rem 2rem; border-radius: 40px; text-decoration: none; font-weight: 600;">Start chatting →</a>
+    </div>
+    <div class="hero-image"><i class="fas fa-graduation-cap"></i><i class="fas fa-microchip" style="font-size: 4rem; margin-left: 1rem;"></i></div>
+  </div>
+
+  <div id="how-it-works">
+    <div class="section-title">How BC CourseFinder works</div>
+    <div class="steps">
+      <div class="step-card"><div class="step-icon"><i class="fas fa-comment-dots"></i></div><h3>1. Ask anything</h3><p>Type your question about IT careers, entrance requirements, or qualifications at Belgium Campus.</p></div>
+      <div class="step-card"><div class="step-icon"><i class="fas fa-database"></i></div><h3>2. AI + Knowledge base</h3><p>Our engine searches a verified knowledge base and generates clear, friendly answers.</p></div>
+      <div class="step-card"><div class="step-icon"><i class="fas fa-shield-alt"></i></div><h3>3. Safe guidance</h3><p>Ethical guardrails prevent off topic or harmful advice. Just reliable career support.</p></div>
+    </div>
+  </div>
+
+  <div id="features">
+    <div class="section-title">Why Matrics ❤️ BC CourseFinder</div>
+    <div class="features-grid">
+      <div class="feature"><i class="fas fa-chalkboard-user"></i><h4>Career explorer</h4><p>Discover 15+ IT paths: software dev, data science, cybersecurity, and more.</p></div>
+      <div class="feature"><i class="fas fa-calculator"></i><h4>APS & subject checker</h4><p>Find out exactly which subjects and APS scores you need for each qualification.</p></div>
+      <div class="feature"><i class="fas fa-brain"></i><h4>No huge text blocks</h4><p>Answers are broken into short paragraphs and bullet points — easy to read on your phone.</p></div>
+      <div class="feature" id="apsCardFeature"><i class="fas fa-chart-line"></i><h4>📊 APS Calculator Card</h4><p>Click here to calculate your APS score instantly and see your eligibility for Belgium Campus programmes.</p></div>
+    </div>
+  </div>
+
+  <div id="about" style="scroll-margin-top: 80px;">
+    <div class="section-title">About BC CourseFinder</div>
+    <div style="background: white; border-radius: 1.5rem; padding: 2rem; margin: 2rem 0; text-align: center;">
+      <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">BC CourseFinder™ is an independent AI guidance tool created to help South African matriculants navigate IT studies at Belgium Campus iTversity. We provide accurate, up to date information on careers, entry requirements, and APS scores – always encouraging you to verify official details on the <a href="https://www.belgiumcampus.ac.za" target="_blank">Belgium Campus website</a>.</p>
+    </div>
+  </div>
+
+  <footer><p>© 2025 BC CourseFinder™ — AI guidance for Belgium Campus iTversity applicants. Not an official university chatbot.<br><i class="fas fa-envelope"></i> Always verify critical information on the official Belgium Campus website.</p></footer>
+</div>
+
+<!-- APS Modal -->
+<div class="modal-overlay" id="apsModal">
+  <div class="modal-content">
+    <div class="modal-header"><h2><i class="fas fa-calculator"></i> My APS Calculator</h2><button class="modal-close" id="closeAPSBtn">&times;</button></div>
+    <form class="aps-form" id="apsForm">
+      <div><h3 style="font-size: 1.1rem; color: #2c1e4a;">Core Subjects</h3><div class="form-group"><label>Mathematics Type</label><select id="mathType" required><option value="pure">Pure Mathematics</option><option value="literacy">Mathematical Literacy</option></select></div><div id="literacyNoteModal" style="display:none; background: #ffe6e6; border-left: 4px solid #ff6b6b; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 0.9rem; color: #d9534f;">⚠️ Mathematical Literacy requires a maths bridging course.</div><div class="form-group"><label>English %</label><input type="number" id="english" min="0" max="100" required></div></div>
+      <div class="form-group"><label>Mathematics %</label><input type="number" id="mathematics" min="0" max="100" required></div>
+      <div class="form-group"><label>Life Orientation % (not counted)</label><input type="number" id="lifeOrientation" min="0" max="100"></div>
+      <div><h3 style="font-size: 1.1rem; color: #2c1e4a;">Additional Subjects (4 required)</h3>
+        <div class="form-group-row"><div class="form-group"><label>Subject 1 Name (e.g. Physical Science, History)</label><input type="text" id="subject1Name" placeholder="Subject name"></div><div class="form-group"><label>Subject 1 %</label><input type="number" id="subject1" required></div></div>
+        <div class="form-group-row"><div class="form-group"><label>Subject 2 Name</label><input type="text" id="subject2Name" placeholder="Subject name"></div><div class="form-group"><label>Subject 2 %</label><input type="number" id="subject2" required></div></div>
+        <div class="form-group-row"><div class="form-group"><label>Subject 3 Name</label><input type="text" id="subject3Name" placeholder="Subject name"></div><div class="form-group"><label>Subject 3 %</label><input type="number" id="subject3" required></div></div>
+        <div class="form-group-row"><div class="form-group"><label>Subject 4 Name</label><input type="text" id="subject4Name" placeholder="Subject name"></div><div class="form-group"><label>Subject 4 %</label><input type="number" id="subject4" required></div></div>
+      </div>
+      <div class="form-group"><label>NSC Endorsement (Expected)</label><select id="endorsement" required><option value="">-- Select --</option><option value="Higher Certificate">Higher Certificate</option><option value="Diploma">Diploma</option><option value="Bachelor">Bachelor</option></select></div>
+      <div class="btn-group"><button type="submit" class="btn-calculate">Calculate APS</button><button type="reset" class="btn-reset">Reset</button></div>
+    </form>
+    <div id="apsResults" style="display: none;"><div class="aps-result"><h3>Your APS Score</h3><div class="aps-score-display" id="apsTotalScore">0</div><div id="apsResultText"></div></div><div><h3>Belgium Campus Eligibility</h3><div id="eligibilityCards" class="eligibility-cards"></div></div><div class="btn-group"><button id="backToForm" class="btn-calculate">Back</button></div></div>
+  </div>
+</div>
+
+<script src="/aps-helper.js"></script>
+<script>
+  // Show/hide bridging note for Math Literacy
+  document.getElementById('mathType').addEventListener('change', function() {
+    const note = document.getElementById('literacyNoteModal');
+    note.style.display = this.value === 'literacy' ? 'block' : 'none';
+  });
+  
+  function percentageToAPS(p) { if (p>=80) return 7; if (p>=70) return 6; if (p>=60) return 5; if (p>=50) return 4; if (p>=40) return 3; if (p>=30) return 2; return 1; }
+  function checkEligibility(aps, eng, math, end) {
+    let eligible = [];
+    if (end === 'Diploma' || end === 'Bachelor') eligible.push({course:'Diploma in IT', status:'eligible', reason:`You have ${end} endorsement.`});
+    else eligible.push({course:'Diploma in IT', status:'ineligible', reason:`Need Diploma endorsement (you have ${end}).`});
+    let bachOK = (end === 'Bachelor' && eng>=50 && math>=50);
+    if (bachOK) eligible.push({course:'Bachelor of IT', status:'eligible', reason:`Bachelor endorsement, English ${eng}%, Maths ${math}%.`});
+    else { let m=[]; if(end!=='Bachelor') m.push('Bachelor endorsement'); if(eng<50) m.push(`English ${eng}%`); if(math<50) m.push(`Maths ${math}%`); eligible.push({course:'Bachelor of IT', status:'ineligible', reason:`Missing: ${m.join(', ')}.`}); }
+    if (bachOK) eligible.push({course:'Bachelor of Computing'+(math>=70?' (Strong!)':''), status:'eligible', reason:`Bachelor endorsement, English ${eng}%, Maths ${math}%.`});
+    else { let m=[]; if(end!=='Bachelor') m.push('Bachelor endorsement'); if(eng<50) m.push(`English ${eng}%`); if(math<50) m.push(`Maths ${math}%`); eligible.push({course:'Bachelor of Computing', status:'ineligible', reason:`Missing: ${m.join(', ')}.`}); }
+    return eligible;
+  }
+  function calculateAPS() {
+    let eng=parseFloat(document.getElementById('english').value), math=parseFloat(document.getElementById('mathematics').value);
+    let s1=parseFloat(document.getElementById('subject1').value), s2=parseFloat(document.getElementById('subject2').value), s3=parseFloat(document.getElementById('subject3').value), s4=parseFloat(document.getElementById('subject4').value);
+    let end=document.getElementById('endorsement').value;
+    if(!eng||!math||!s1||!s2||!s3||!s4||!end) { alert('Please fill all required fields.'); return; }
+    let total = percentageToAPS(eng)+percentageToAPS(math)+percentageToAPS(s1)+percentageToAPS(s2)+percentageToAPS(s3)+percentageToAPS(s4);
+    let eligible = checkEligibility(total, eng, math, end);
+    let profile = { apsScore: total, english: eng, mathematics: math, endorsement: end, eligibleCourses: eligible, timestamp: new Date().toISOString() };
+    if(window.saveAPSProfile) window.saveAPSProfile(profile);
+    else localStorage.setItem('studentAPSProfile', JSON.stringify(profile));
+    document.getElementById('apsForm').style.display='none';
+    document.getElementById('apsResults').style.display='block';
+    document.getElementById('apsTotalScore').innerText=total;
+    document.getElementById('apsResultText').innerHTML=`You have earned <strong>${total} APS points</strong>. Endorsement: <strong>${end}</strong>.`;
+    document.getElementById('eligibilityCards').innerHTML = eligible.map(p => `<div class="eligibility-card ${p.status}"><h4>${p.course}</h4><p>${p.reason}</p></div>`).join('');
+  }
+  const modal = document.getElementById('apsModal'), openBtn = document.getElementById('openAPSBtn'), closeBtn = document.getElementById('closeAPSBtn');
+  openBtn.addEventListener('click',()=>{ modal.classList.add('active'); document.getElementById('apsForm').style.display='block'; document.getElementById('apsResults').style.display='none'; let p=window.getStudentAPSProfile?.(); if(p){ document.getElementById('english').value=p.english; document.getElementById('mathematics').value=p.mathematics; document.getElementById('endorsement').value=p.endorsement; } });
+  closeBtn.addEventListener('click',()=>modal.classList.remove('active'));
+  modal.addEventListener('click',(e)=>e.target===modal&&modal.classList.remove('active'));
+  document.getElementById('apsForm').addEventListener('submit',e=>{e.preventDefault(); calculateAPS();});
+  document.getElementById('backToForm').addEventListener('click',()=>{document.getElementById('apsForm').style.display='block'; document.getElementById('apsResults').style.display='none';});
+  document.getElementById('apsCardFeature').addEventListener('click',()=>openBtn.click());
+  document.querySelector('a[href="#about"]').addEventListener('click',e=>{e.preventDefault(); document.getElementById('about').scrollIntoView({behavior:'smooth'});});
+  document.querySelector('a[href="#how-it-works"]').addEventListener('click',e=>{e.preventDefault(); document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'});});
+  document.querySelector('a[href="#features"]').addEventListener('click',e=>{e.preventDefault(); document.getElementById('features').scrollIntoView({behavior:'smooth'});});
+  document.querySelector('a[href="#"]').addEventListener('click',e=>{e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});});
+</script>
+</body>
+</html>

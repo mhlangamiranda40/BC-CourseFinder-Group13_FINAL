@@ -1,52 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>BC CourseFinder™ | AI Career Guide</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .note a { color: #4f46e5; text-decoration: underline; font-weight: 500; }
+    .back-home { background: none; border: none; color: white; font-size: 0.9rem; margin-left: 1rem; cursor: pointer; text-decoration: underline; }
+    .back-home:hover { opacity: 0.8; }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    .message a { color: #4f46e5; text-decoration: underline; }
+    .message a:hover { color: #4338ca; }
+  </style>
 </head>
+
 <body>
+
   <div class="container">
     <header>
-      <h1>BC CourseFinder™</h1>
-      <p>Your AI career guide for IT at Belgium Campus</p>
+      <div>
+        <h1>BC CourseFinder™</h1>
+        <p>Your AI career guide for IT at Belgium Campus</p>
+      </div>
+      <button class="back-home" id="backHomeBtn">← Back to Home</button>
     </header>
 
     <div id="chat" class="chat-area">
-      <div class="message bot">
-        👋 Hi! I'm BC CourseFinder™. Ask me about IT careers, subjects, qualifications, and more!
-      </div>
+      <div class="message bot">👋 Hi! I'm BC CourseFinder™. Ask me about IT careers, subjects, qualifications, and more!</div>
     </div>
 
-    <!-- Suggestion chips row -->
     <div class="suggestions">
       <button class="suggestion-chip" data-question="What IT careers can I study with Maths and Physical Science?">📚 Careers with Maths & Science</button>
       <button class="suggestion-chip" data-question="What skills do I need to become a software developer?">💻 Skills for software developer</button>
       <button class="suggestion-chip" data-question="What is the difference between a diploma and a degree?">🎓 Diploma vs Degree</button>
       <button class="suggestion-chip" data-question="What is the difference between Maths and Math Literacy for IT selection?">📐 Maths vs Math Literacy</button>
       <button class="suggestion-chip" data-question="What is the difference between Software Development, Data Science, and Networking?">🖧 Dev vs Data vs Networking</button>
+      <button class="suggestion-chip" data-link="/aps.html">📊 APS Calculator</button>
+      <button class="suggestion-chip" data-link="/landing.html">🏠 Home</button>
     </div>
 
     <div class="input-area">
       <input type="text" id="userInput" placeholder="Type your question..." autocomplete="off">
       <button id="sendBtn">Send</button>
     </div>
-    <p class="note">🔒 I only answer IT‑related career questions.</p>
+    <p class="note" id="footerNote">🔒 I only answer IT‑related career questions.</p>
   </div>
 
+  <script src="/aps-helper.js"></script>
   <script>
+
+    // ── UTILITIES ──────────────────────────────────────────────────────────────
+
+    // Convert plain URLs in text into clickable anchor tags
+    function linkify(text) {
+      const urlRegex = /(\b(https?:\/\/|www\.)[^\s<]+[^<.,:;!?\)\s])/gi;
+      return text.replace(urlRegex, function(url) {
+        let href = url;
+        if (!url.startsWith('http')) href = 'https://' + url;
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+    }
+
+    // ── KNOWLEDGE BASE ─────────────────────────────────────────────────────────
+
+    const knowledgeBase = {
+      about: `
+        Belgium Campus iTversity (BC) is a private higher education institution in South Africa.
+        It is registered with the Department of Higher Education and Training (DHET).
+        It is accredited by the Council on Higher Education (CHE).
+        It is located in Pretoria, Gauteng, South Africa.
+        Belgium Campus specialises exclusively in Information Technology education.
+        It was founded with the goal of producing work-ready IT graduates.
+        The campus has strong ties with the South African IT industry.
+
+        🔗 Source: Official Belgium Campus website (https://www.belgiumcampus.ac.za/)
+        ⚠️ Always verify current information on the official website as details may change.
+      `,
+      entryRequirements: `
+        **Entry requirements for Belgium Campus IT programmes:**
+
+        All applicants must have a National Senior Certificate (NSC) – your Matric certificate.
+
+        **For HIGHER CERTIFICATE (1 year):**
+        - Typically lower entry requirements than Diploma.
+        - Mathematics and English recommended but entry criteria vary.
+        - Ideal for students improving their marks before Diploma.
+
+        **For DIPLOMA programmes (3 years):**
+        - **Mathematics** at **40% or above** (Pure Mathematics OR Mathematical Literacy with bridging course).
+        - English at **40% or above**.
+        - APS of at least **18**.
+        - Includes: Diploma in IT, Diploma for Deaf Students.
+
+        **For BACHELOR programmes – BIT & BComp (3 years):**
+        - **Mathematics** at **50% or above** (Pure Mathematics OR Mathematical Literacy with bridging course).
+        - English at **50% or above**.
+        - APS (Admission Point Score) of at least **24**.
+        - Physical Science recommended but not always compulsory.
+
+        **For BACHELOR OF COMPUTER SCIENCE (Honours) (4 years):**
+        - **Mathematics** at **60% or above** (Pure Mathematics strongly preferred).
+        - English at **50% or above**.
+        - APS of at least **24**.
+        - Strong academic record required.
+
+        **Mathematics Note:**
+        - **Pure Mathematics** is preferred and allows direct entry.
+        - **Mathematical Literacy** is also accepted BUT requires completion of a maths bridging course before or during your studies to ensure you have the necessary foundation.
+
+        **What is APS?**
+        APS is calculated by converting your Matric subject percentages into points (1–7 scale).
+        You add the points from your six best subjects, excluding Life Orientation.
+
+        🔗 Source: https://www.belgiumcampus.ac.za/qualifications/
+        ⚠️ These are typical requirements – please confirm on the official website before applying.
+      `,
+      programmes: `
+        **Programmes offered at Belgium Campus:**
+
+        1. **Higher Certificate in Information Technology** – 1 year
+           - Bridging programme for students who don't meet diploma entry requirements.
+           - Covers foundational IT skills and knowledge.
+           - After successful completion, progress to Diploma or Bachelor.
+
+        2. **Diploma in Information Technology (DIT)** – 3 years
+           - Practical, hands-on qualification with real-world focus.
+           - Specialisations: Software Development, Infrastructure.
+           - Entry: APS 18+, Maths 40%+, English 40%+.
+           - Can be upgraded to a degree through further study.
+
+        3. **Diploma for Deaf Students** – 3 years
+           - Same as DIT but with specialised support for deaf students.
+           - Specialisation: Software Development.
+           - Full access support and accommodations provided.
+
+        4. **Bachelor of Information Technology (BIT)** – 3 years
+           - Full degree with practical application.
+           - Specialisation: Software Development.
+           - Entry: APS 24+, Maths 50%+, English 50%+.
+
+        5. **Bachelor of Computing (BComp)** – 3 years
+           - Full degree with theoretical and practical balance.
+           - Specialisations: Data Science, Software Engineering.
+           - Entry: APS 24+, Maths 50%+, English 50%+.
+
+        6. **Bachelor of Computer Science (Honours)** – 4 years
+           - Advanced degree with research component.
+           - Highest qualification offered by Belgium Campus.
+           - Entry: APS 24+, Maths 60%+, English 50%+, strong academic record.
+
+        7. **Part-Time Bachelor of Information Technology** – 3 years (flexible schedule)
+           - For working professionals or students needing flexible hours.
+           - Same content as full-time BIT.
+
+        🔗 Full details: https://www.belgiumcampus.ac.za/qualifications/
+        ⚠️ Programme structures and entry requirements subject to change – always check the website.
+      `,
+      careers: `
+        **IT Careers you can pursue after Belgium Campus:**
+
+        - **Software Developer / Engineer** – Build apps, websites, systems (Java, Python, C#).
+        - **Data Scientist / Analyst** – Analyse data, use Python, SQL, machine learning.
+        - **Network Engineer / Administrator** – Design and maintain networks (Cisco, cloud).
+        - **Cybersecurity Analyst** – Protect against digital threats, investigate breaches.
+        - **IT Support Technician / SysAdmin** – Help users, manage servers and infrastructure.
+        - **Database Administrator (DBA)** – Manage company databases (SQL, Oracle).
+        - **UI/UX Designer** – Design app/website interfaces and usability.
+
+        🔗 Career guidance: https://www.belgiumcampus.ac.za/career-possibilities/
+      `,
+      subjects: `
+        **Important Matric subjects for IT at Belgium Campus:**
+
+        - **Mathematics** – ESSENTIAL (Pure Maths preferred, but Mathematical Literacy also accepted with bridging course).
+          Aim for at least 50% (degree) or 40% (diploma).
+        - **English** – ESSENTIAL. Need at least 50% (degree) or 40% (diploma).
+        - **Physical Science** – RECOMMENDED (strengthens application, helps logical thinking).
+        - **Information Technology (IT)** as a subject – HELPFUL (gives you a head start).
+        - **Computer Applications Technology (CAT)** – LESS RELEVANT; does not replace IT subject.
+
+        **Why Mathematics is Critical:**
+        Mathematical Literacy covers basic numeracy and everyday maths, while Pure Maths covers algebra, calculus, and functions needed for IT.
+        If you took Literacy, the bridging course will equip you with Pure Maths concepts needed for programming and computing science.
+
+        🔗 Subject requirements: https://www.belgiumcampus.ac.za/requirements-to-study-it/
+      `,
+      qualifications: `
+        **Belgium Campus Qualifications Overview:**
+
+        **Higher Certificate (1 year):**
+        - Shortest qualification and bridging option.
+        - For students who don't meet Diploma entry requirements.
+        - After passing, continue into Diploma or Bachelor programmes.
+
+        **Diploma in Information Technology / Diploma for Deaf Students (3 years):**
+        - Practical, hands-on focus with real-world skills.
+        - Lower entry: APS 18+, Maths 40%+, English 40%+.
+        - Prepares you directly for the workplace.
+        - Can be upgraded to a Bachelor degree through further study.
+        - Specialisations: Software Development, Infrastructure.
+
+        **Bachelor of Information Technology (BIT) (3 years):**
+        - Full degree with practical application.
+        - Entry: APS 24+, Maths 50%+, English 50%+.
+        - Specialisation: Software Development.
+        - Opens doors to Honours and Master's programmes.
+
+        **Bachelor of Computing (BComp) (3 years):**
+        - Full degree balancing theory and practice.
+        - Entry: APS 24+, Maths 50%+, English 50%+.
+        - Specialisations: Data Science, Software Engineering.
+
+        **Bachelor of Computer Science (Honours) (4 years):**
+        - Advanced degree with research component.
+        - Highest qualification offered by Belgium Campus.
+        - Entry: APS 24+, Maths 60%+, English 50%+, strong academic record.
+
+        **Part-Time Options (3 years):**
+        - Part-Time Bachelor of Information Technology available.
+        - Flexible schedule for working professionals.
+
+        All qualifications are recognised by South African employers and internationally.
+        🔗 More info: https://www.belgiumcampus.ac.za/qualifications/
+      `,
+      contact: `
+        **How to apply or get more information:**
+
+        - **Website:** www.belgiumcampus.ac.za
+        - **Location:** Pretoria, Gauteng, South Africa
+        - **Applications:** done online via the Belgium Campus website.
+
+        For the most up-to-date fees, closing dates, and bursary information,
+        always check the **official Belgium Campus website** directly, as these details change each academic year.
+
+        🔗 Apply here: https://www.belgiumcampus.ac.za/applicant-portal/
+      `
+    };
+
+    function searchKnowledgeBase(userMessage) {
+      const message = userMessage.toLowerCase();
+
+      // Targeted: Maths vs Literacy
+      if ((message.includes('maths') || message.includes('math')) && (message.includes('literacy') || message.includes('literacy for it'))) {
+        return `**📚 Maths vs Mathematical Literacy for IT – Key Differences:**
+
+**Pure Mathematics:**
+- Covers algebra, calculus, functions, trigonometry, and advanced problem-solving.
+- **PREFERRED** for IT studies at Belgium Campus.
+- Allows direct entry into all IT programmes (Diploma, Bachelor).
+- Recommended mark: 50%+ for Bachelor, 40%+ for Diploma.
+
+**Mathematical Literacy:**
+- Focuses on practical, everyday numeracy and basic financial mathematics.
+- **ACCEPTED** but requires a **maths bridging course** before or during your first year.
+- Still counts towards your APS score the same way as Pure Maths.
+
+**Bottom line:** Pure Maths is the direct path. Literacy is possible but requires extra effort through the bridging course.
+
+🔗 For more info: https://www.belgiumcampus.ac.za/requirements-to-study-it/
+🔗 **Always verify on the official Belgium Campus website:** https://www.belgiumcampus.ac.za/`;
+      }
+
+      // Targeted: Diploma vs Degree
+      if ((message.includes('difference') && message.includes('diploma') && message.includes('degree')) || message.includes('diploma vs degree') || message.includes('degree vs diploma')) {
+        return `**🎓 Degree vs Diploma at Belgium Campus – Key Differences:**
+
+**Higher Certificate (1 year):** Bridging qualification; lower entry requirements; progress to Diploma or Bachelor after.
+
+**Diploma in Information Technology (3 years):** Practical focus; APS 18+, Maths 40%+, English 40%+; can be upgraded to a Bachelor later.
+
+**Bachelor of IT / Bachelor of Computing (3 years):** Full degree; APS 24+, Maths 50%+, English 50%+; opens doors to Honours.
+
+**Bachelor of Computer Science (Honours) (4 years):** Highest qualification; APS 24+, Maths 60%+; includes research component.
+
+🔗 More info: https://www.belgiumcampus.ac.za/qualifications/
+🔗 **Always verify on the official Belgium Campus website:** https://www.belgiumcampus.ac.za/`;
+      }
+
+      const relevantSections = [];
+      if (message.includes("belgium campus") || message.includes("what is bc") || message.includes("about bc") || message.includes("who are you") || message.includes("tell me about")) relevantSections.push(knowledgeBase.about);
+      if (message.includes("requirement") || message.includes("aps") || message.includes("entry") || message.includes("qualify") || message.includes("admission") || message.includes("apply") || message.includes("get in") || message.includes("marks needed") || message.includes("eligible")) relevantSections.push(knowledgeBase.entryRequirements);
+      if (message.includes("programme") || message.includes("program") || message.includes("course") || message.includes("bsc") || message.includes("degree") || message.includes("diploma") || message.includes("certificate") || message.includes("study") || message.includes("offer")) relevantSections.push(knowledgeBase.programmes);
+      if (message.includes("career") || message.includes("job") || message.includes("work") || message.includes("developer") || message.includes("data scientist") || message.includes("network") || message.includes("cybersecurity") || message.includes("after i graduate") || message.includes("what can i do")) relevantSections.push(knowledgeBase.careers);
+      if (message.includes("subject") || message.includes("maths") || message.includes("mathematics") || message.includes("math literacy") || message.includes("physical science") || message.includes("english") || message.includes("cat") || message.includes("matric subject")) relevantSections.push(knowledgeBase.subjects);
+      if (message.includes("difference") || message.includes("degree vs") || message.includes("diploma vs") || message.includes("which is better") || message.includes("qualification") || message.includes("certificate vs") || message.includes("higher certificate")) relevantSections.push(knowledgeBase.qualifications);
+      if (message.includes("contact") || message.includes("website") || message.includes("apply") || message.includes("application") || message.includes("fees") || message.includes("fee") || message.includes("bursary") || message.includes("how do i register")) relevantSections.push(knowledgeBase.contact);
+
+      if (relevantSections.length === 0) return "";
+      return relevantSections.join("\n\n") + "\n\n🔗 **Always verify on the official Belgium Campus website:** https://www.belgiumcampus.ac.za/";
+    }
+
+    function getLocalReply(message, apsProfile) {
+      const lower = message.toLowerCase();
+      const kbAnswer = searchKnowledgeBase(message);
+      if (kbAnswer) return kbAnswer;
+
+      if (lower.includes('aps') || lower.includes('eligible') || lower.includes('qualify')) {
+        if (apsProfile) {
+          return `📊 **Based on your APS Profile:**\n- APS Score: ${apsProfile.apsScore}\n- English: ${apsProfile.english}%\n- Maths: ${apsProfile.mathematics}%\n- Endorsement: ${apsProfile.endorsement}\n\n` +
+            `- **Diploma in IT**: ${apsProfile.endorsement === 'Diploma' || apsProfile.endorsement === 'Bachelor' ? '✅ You meet the endorsement requirement.' : '❌ You need Diploma or Bachelor endorsement.'}\n` +
+            `- **Bachelor's degrees**: ${apsProfile.endorsement === 'Bachelor' && apsProfile.english >= 50 && apsProfile.mathematics >= 50 ? '✅ You qualify for Bachelors!' : '⚠️ Check missing requirements.'}\n\nAlways confirm with the official Belgium Campus website.`;
+        } else {
+          return "🎓 To check your eligibility, please use the **APS Calculator** (click the button above). I need your subject percentages to give you a personalised answer.\n\n🔗 https://www.belgiumcampus.ac.za/requirements-to-study-it/";
+        }
+      }
+      if (lower.includes('software developer')) return "💻 **To become a Software Developer:**\n- Key skills: Programming (Python, Java, C#), problem-solving, Git, databases, web development.\n- At Belgium Campus: Study **Bachelor of IT** or **Bachelor of Computing**.\n- Entry: Bachelor endorsement, Maths ≥50%, English ≥50%.\n🔗 https://www.belgiumcampus.ac.za/career-possibilities/";
+      if (lower.includes('data science') && lower.includes('networking')) return "🖧 **Software Dev vs Data Science vs Networking:**\n- **Software Dev**: Build apps, websites, systems.\n- **Data Science**: Analyse data, build ML models.\n- **Networking**: Manage servers, cloud, security.\nAll three are offered via specialisations at Belgium Campus.\n🔗 https://www.belgiumcampus.ac.za/qualifications/";
+      if (lower.includes('careers') && (lower.includes('maths') || lower.includes('science'))) return "🚀 **IT Careers with Maths & Science:**\n- Software Engineer\n- Data Scientist\n- Cybersecurity Analyst\n- Network Architect\n- Cloud Engineer\n- AI/ML Engineer\n\n🔗 https://www.belgiumcampus.ac.za/career-possibilities/";
+
+      return "I'm here to help with IT careers, entry requirements, and Belgium Campus programmes. Visit the **official Belgium Campus website** (https://www.belgiumcampus.ac.za) or use the APS Calculator for specific details!";
+    }
+
+    // ── USER STATE & PERSISTENCE ───────────────────────────────────────────────
+
+    let currentUser = null, isGuest = true, chatHistory = [];
     const chatDiv = document.getElementById("chat");
     const userInput = document.getElementById("userInput");
     const sendBtn = document.getElementById("sendBtn");
 
-    function addMessage(text, isUser = false) {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `message ${isUser ? "user" : "bot"}`;
-      msgDiv.textContent = text;
-      chatDiv.appendChild(msgDiv);
+    function loadUser() {
+      const loggedInEmail = localStorage.getItem('bc_logged_in_user');
+      if (loggedInEmail) {
+        const users = JSON.parse(localStorage.getItem('bc_users') || '{}');
+        const user = users[loggedInEmail];
+        if (user) {
+          currentUser = user; isGuest = false;
+          chatHistory = user.chatHistory || [];
+          renderMessagesFromHistory();
+          updateFooterDisplay();
+          return;
+        }
+      }
+      isGuest = true; currentUser = null; chatHistory = [];
+      localStorage.removeItem('bc_logged_in_user');
+      updateFooterDisplay();
+      if (chatDiv.children.length === 0) {
+        const w = document.createElement("div");
+        w.className = "message bot";
+        w.innerHTML = linkify("👋 Hi! I'm BC CourseFinder™. Ask me about IT careers, subjects, qualifications, and more!");
+        chatDiv.appendChild(w);
+      }
+    }
+
+    function updateFooterDisplay() {
+      const footer = document.getElementById('footerNote');
+      if (isGuest) {
+        footer.innerHTML = `🔒 Guest mode – your conversation will NOT be saved. <a href="/login.html">Sign up / Login</a> to save history.`;
+      } else {
+        footer.innerHTML = `🔒 Logged in as ${currentUser.name} ${currentUser.surname} | <a href="#" id="logoutLink">Logout</a> | <a href="/landing.html">Home</a>`;
+        const logoutLink = document.getElementById('logoutLink');
+        if (logoutLink) logoutLink.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('bc_logged_in_user'); window.location.reload(); });
+      }
+    }
+
+    function renderMessagesFromHistory() {
+      chatDiv.innerHTML = '';
+      if (!chatHistory.length) {
+        const w = document.createElement("div"); w.className = "message bot";
+        w.innerHTML = linkify("👋 Hi! I'm BC CourseFinder™. Ask me about IT careers, subjects, qualifications, and more!");
+        chatDiv.appendChild(w);
+      } else {
+        chatHistory.forEach(msg => {
+          const d = document.createElement("div");
+          d.className = `message ${msg.role === 'user' ? 'user' : 'bot'}`;
+          let formatted = (msg.content || '').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+          formatted = linkify(formatted);
+          d.innerHTML = formatted;
+          chatDiv.appendChild(d);
+        });
+      }
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
+
+    function saveMessageToHistory(role, content) {
+      const msg = { role, content, timestamp: new Date().toISOString() };
+      chatHistory.push(msg);
+      if (!isGuest && currentUser) {
+        const users = JSON.parse(localStorage.getItem('bc_users') || '{}');
+        if (users[currentUser.email]) {
+          users[currentUser.email].chatHistory = chatHistory;
+          localStorage.setItem('bc_users', JSON.stringify(users));
+          currentUser.chatHistory = chatHistory;
+        }
+      }
+    }
+
+    function addMessage(text, isUser = false) {
+      const d = document.createElement("div");
+      d.className = `message ${isUser ? "user" : "bot"}`;
+      let formatted = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      formatted = linkify(formatted);
+      d.innerHTML = formatted;
+      chatDiv.appendChild(d);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    // ── SEND MESSAGE (API-first with knowledge base fallback) ──────────────────
 
     async function sendMessage() {
       const message = userInput.value.trim();
@@ -58,42 +409,59 @@
 
       const typing = document.createElement("div");
       typing.className = "message bot typing";
-      typing.textContent = "Typing...";
+      typing.textContent = "BC CourseFinder is thinking...";
       chatDiv.appendChild(typing);
       chatDiv.scrollTop = chatDiv.scrollHeight;
 
       try {
-        const res = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
-        });
-        const data = await res.json();
+        let enrichedMessage = message;
+        const apsProfile = window.getStudentAPSProfile ? window.getStudentAPSProfile() : null;
+        const relevant = ['aps', 'eligible', 'qualify', 'admission', 'requirement', 'diploma', 'bachelor', 'programme', 'maths', 'english'];
+        if (apsProfile && relevant.some(t => message.toLowerCase().includes(t))) {
+          enrichedMessage += `\n\n[My APS Profile: APS Score=${apsProfile.apsScore}, English=${apsProfile.english}%, Maths=${apsProfile.mathematics}%, Endorsement=${apsProfile.endorsement}]`;
+        }
+
+        let reply = null;
+        try {
+          // Primary: call the backend API
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: enrichedMessage, history: chatHistory.slice(-6).map(m => ({ role: m.role, content: m.content })) })
+          });
+          if (res.ok) { const data = await res.json(); reply = data.reply; }
+          else throw new Error("API unavailable");
+        } catch (e) {
+          // Fallback: use local knowledge base if API is unreachable
+          console.warn("API unavailable – using local knowledge base:", e.message);
+          reply = getLocalReply(enrichedMessage, apsProfile);
+        }
+
         typing.remove();
-        addMessage(data.reply);
+        addMessage(reply);
+        saveMessageToHistory('user', message);
+        saveMessageToHistory('assistant', reply);
+
       } catch (err) {
         typing.remove();
-        addMessage("Sorry, I'm having trouble connecting. Please try again.");
+        addMessage("I'm having trouble connecting. Please try again later.");
       } finally {
         sendBtn.disabled = false;
         userInput.focus();
       }
     }
 
-    // Suggestion chips click handler
-    const chips = document.querySelectorAll('.suggestion-chip');
-    chips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        const question = chip.getAttribute('data-question');
-        userInput.value = question;
-        sendMessage();
-      });
-    });
+    // ── EVENT LISTENERS ────────────────────────────────────────────────────────
 
     sendBtn.addEventListener("click", sendMessage);
-    userInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
+    userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+    document.querySelectorAll('.suggestion-chip[data-question]').forEach(chip => chip.addEventListener('click', () => { userInput.value = chip.getAttribute('data-question'); sendMessage(); }));
+    document.querySelectorAll('.suggestion-chip[data-link]').forEach(chip => chip.addEventListener('click', () => { window.location.href = chip.getAttribute('data-link'); }));
+    document.getElementById('backHomeBtn').addEventListener('click', () => { window.location.href = '/landing.html'; });
+
+    loadUser();
+
   </script>
+
 </body>
 </html>
